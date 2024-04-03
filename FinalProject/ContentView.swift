@@ -15,7 +15,7 @@ struct ContentView: View {
         NavigationStack{
             ZStack{
                 if isAnimating{
-                    MainView()
+                    HomeView()
                 }
                 else{
                     SplashScreenView()
@@ -30,15 +30,53 @@ struct ContentView: View {
     }
 }
 
-struct MainView: View {
+struct HomeView: View {
+    @State private var isDisclosed = false
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack{
+            VStack {
+                Image("images")
+                HStack{
+                    Text("Se övningar")
+                    Button("^") {
+                        withAnimation {
+                            isDisclosed.toggle()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+                        
+                        
+                        VStack {
+                            GroupBox {
+                                Text("Övning 1")
+                                Text("Övning 3")
+                                Text("Övning 4")
+                                Text("Övning 5")
+                                Text("Övning 6")
+                                Text("Övning 7")
+                                Text("Övning 8")
+                                Text("Övning 9")
+                                Text("Övning 10")
+                            }
+                        }
+                        .frame(height: isDisclosed ? nil : 0, alignment: .top)
+                        .clipped()
+                        
+                        VStack {
+                            Button("Börja"){}
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background(.thinMaterial)
+                    .padding()
         }
-        .padding()
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(
+            Color.blue, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .navigationBarTitle("Meditera")
+         
     }
 }
 
