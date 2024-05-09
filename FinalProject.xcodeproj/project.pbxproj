@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B650CB532BED065900F82779 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B650CB522BED065900F82779 /* GoogleService-Info.plist */; };
+		B650CB552BED09CA00F82779 /* ViewModelAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = B650CB542BED09CA00F82779 /* ViewModelAuth.swift */; };
 		B65BAC732BBD71EE00E0D4AD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B65BAC722BBD71EE00E0D4AD /* FirebaseAuth */; };
 		B65BAC752BBD71EE00E0D4AD /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = B65BAC742BBD71EE00E0D4AD /* FirebaseFirestore */; };
 		B65BAC772BBD71EE00E0D4AD /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B65BAC762BBD71EE00E0D4AD /* FirebaseFirestoreCombine-Community */; };
@@ -38,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B650CB522BED065900F82779 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../.Trash/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B650CB542BED09CA00F82779 /* ViewModelAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelAuth.swift; sourceTree = "<group>"; };
 		B662E4772BA0859500501613 /* FinalProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinalProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B662E47A2BA0859500501613 /* FinalProjectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalProjectApp.swift; sourceTree = "<group>"; };
 		B662E47C2BA0859500501613 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -104,8 +108,10 @@
 			children = (
 				B662E47A2BA0859500501613 /* FinalProjectApp.swift */,
 				B662E47C2BA0859500501613 /* ContentView.swift */,
+				B650CB522BED065900F82779 /* GoogleService-Info.plist */,
 				B662E47E2BA0859600501613 /* Assets.xcassets */,
 				B662E4802BA0859600501613 /* Preview Content */,
+				B650CB542BED09CA00F82779 /* ViewModelAuth.swift */,
 			);
 			path = FinalProject;
 			sourceTree = "<group>";
@@ -250,6 +256,7 @@
 			files = (
 				B662E4822BA0859600501613 /* Preview Assets.xcassets in Resources */,
 				B662E47F2BA0859600501613 /* Assets.xcassets in Resources */,
+				B650CB532BED065900F82779 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B650CB552BED09CA00F82779 /* ViewModelAuth.swift in Sources */,
 				B662E47D2BA0859500501613 /* ContentView.swift in Sources */,
 				B662E47B2BA0859500501613 /* FinalProjectApp.swift in Sources */,
 			);
