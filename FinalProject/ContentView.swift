@@ -35,50 +35,58 @@ struct HomeView: View {
     @ObservedObject var authViewModel = AuthViewModel()
     @State private var isDisclosed = false
     var body: some View {
-        ZStack{
-            VStack {
-                Image("images")
-                HStack{
-                    Text("Se övningar")
-                    Button("^") {
-                        withAnimation {
-                            isDisclosed.toggle()
-                        }
-                    }
-                    .buttonStyle(.plain)
-                }
-                        
-                        
-                        VStack {
-                            GroupBox {
-                                Text("Övning 1")
-                                Text("Övning 3")
-                                Text("Övning 4")
-                                Text("Övning 5")
-                                Text("Övning 6")
-                                Text("Övning 7")
-                                Text("Övning 8")
-                                Text("Övning 9")
-                                Text("Övning 10")
+        NavigationStack{
+            ZStack{
+                VStack {
+                    Image("images")
+                    HStack{
+                        Text("Se övningar")
+                        Button("^") {
+                            withAnimation {
+                                isDisclosed.toggle()
                             }
                         }
-                        .frame(height: isDisclosed ? nil : 0, alignment: .top)
-                        .clipped()
-                        
-                        VStack {
-                            Button("Börja"){}
+                        .buttonStyle(.plain)
+                    }
+                    
+                    
+                    VStack {
+                        GroupBox {
+                            Text("Övning 1")
+                            Text("Övning 3")
+                            Text("Övning 4")
+                            Text("Övning 5")
+                            Text("Övning 6")
+                            Text("Övning 7")
+                            Text("Övning 8")
+                            Text("Övning 9")
+                            Text("Övning 10")
                         }
                     }
-                    //.frame(maxWidth: .infinity)
-                    .background(.thinMaterial)
-                    .padding()
-                    .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+                    .frame(height: isDisclosed ? nil : 0, alignment: .top)
+                    .clipped()
+                    
+                    NavigationLink(destination: ExerciseView()) {
+                                        Text("Start Workout")
+                                            .font(.title)
+                                            .padding()
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                    }
+                                    .padding()
+                }
+                //.frame(maxWidth: .infinity)
+                .background(.thinMaterial)
+                .padding()
+                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+            }
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarBackground(
+                Color.blue, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .navigationBarTitle("Meditera")
         }
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbarBackground(
-            Color.blue, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .navigationBarTitle("Meditera")
          
     }
 }
@@ -214,6 +222,116 @@ struct LogInView: View {
         }
     }
 }
+
+struct Exercise {
+    let name: String
+    let imageName: String
+}
+
+struct ExerciseView: View {
+    @State private var currentExerciseIndex = 0
+    @State private var timeRemaining = 600
+    @State private var isResting = false
+    @State private var isPaused = false
+    @State private var timer: Timer?
+    
+    let exercises: [Exercise] = [
+        Exercise(name: "Push-up", imageName: "pushup"),
+        Exercise(name: "Squat", imageName: "squat"),
+        Exercise(name: "Lunge", imageName: "lunge"),
+        Exercise(name: "Plank", imageName: "plank"),
+        Exercise(name: "Burpee", imageName: "burpee"),
+        Exercise(name: "Sit-up", imageName: "situp"),
+        Exercise(name: "Jumping Jack", imageName: "jumpingjack"),
+        Exercise(name: "Mountain Climber", imageName: "mountainclimber"),
+        Exercise(name: "High Knees", imageName: "highknees"),
+        Exercise(name: "Leg Raise", imageName: "legraise")
+    ]
+    
+    let exerciseDuration = 45 // 45 seconds per exercise
+    let breakDuration = 15 // 15 seconds break
+    
+    var body: some View {
+        VStack {
+            Text("Time Remaining: \(timeString(time: timeRemaining))")
+                .font(.largeTitle)
+                .padding()
+            
+            if !isResting {
+                ExerciseDetailView(exercise: exercises[currentExerciseIndex])
+            } else {
+                Text("Rest")
+                    .font(.largeTitle)
+                    .padding()
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                if self.isPaused {
+                    self.startTimer()
+                } else {
+                    self.timer?.invalidate()
+                }
+                self.isPaused.toggle()
+            }) {
+                Text(isPaused ? "Resume" : "Pause")
+                    .font(.title)
+                    .padding()
+                    .background(isPaused ? Color.green : Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding()
+        }
+        .onAppear(perform: startTimer)
+    }
+    
+    func startTimer() {
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            if self.timeRemaining > 0 {
+                self.timeRemaining -= 1
+                
+                if !self.isResting {
+                    if self.timeRemaining % (self.exerciseDuration + self.breakDuration) == self.breakDuration {
+                        self.isResting = true
+                    }
+                } else {
+                    if self.timeRemaining % (self.exerciseDuration + self.breakDuration) == 0 {
+                        self.isResting = false
+                        self.currentExerciseIndex = (self.currentExerciseIndex + 1) % self.exercises.count
+                    }
+                }
+            } else {
+                timer.invalidate()
+            }
+        }
+    }
+    
+    func timeString(time: Int) -> String {
+        let minutes = time / 60
+        let seconds = time % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+}
+
+struct ExerciseDetailView: View {
+    let exercise: Exercise
+    
+    var body: some View {
+        VStack {
+            Text(exercise.name)
+                .font(.largeTitle)
+                .padding()
+            Image(exercise.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding()
+        }
+    }
+}
+
+
 
 #Preview {
     ContentView()
