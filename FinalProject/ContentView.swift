@@ -34,62 +34,134 @@ struct ContentView: View {
 struct HomeView: View {
     @ObservedObject var authViewModel = AuthViewModel()
     @State private var isDisclosed = false
+    
     var body: some View {
-        NavigationStack{
-            ZStack{
-                VStack {
+        NavigationStack {
+            ZStack {
+                Color(.systemGray6)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
                     Image("images")
-                    HStack{
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150, height: 150)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.blue, lineWidth: 4))
+                        .shadow(radius: 10)
+                    
+                    HStack {
                         Text("Se övningar")
-                        Button("^") {
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        
+                        Button(action: {
                             withAnimation {
                                 isDisclosed.toggle()
                             }
+                        }) {
+                            Image(systemName: isDisclosed ? "chevron.up" : "chevron.down")
+                                .foregroundColor(.blue)
+                                .padding()
                         }
                         .buttonStyle(.plain)
                     }
                     
-                    
                     VStack {
                         GroupBox {
-                            Text("Övning 1")
-                            Text("Övning 3")
-                            Text("Övning 4")
-                            Text("Övning 5")
-                            Text("Övning 6")
-                            Text("Övning 7")
-                            Text("Övning 8")
-                            Text("Övning 9")
-                            Text("Övning 10")
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Övning 1")
+                                Text("Övning 2")
+                                Text("Övning 3")
+                                Text("Övning 4")
+                                Text("Övning 5")
+                                Text("Övning 6")
+                                Text("Övning 7")
+                                Text("Övning 8")
+                                Text("Övning 9")
+                                Text("Övning 10")
+                            }
+                            .padding()
                         }
+                        .frame(height: isDisclosed ? nil : 0, alignment: .top)
+                        .clipped()
+                        .animation(.easeInOut, value: isDisclosed)
                     }
-                    .frame(height: isDisclosed ? nil : 0, alignment: .top)
-                    .clipped()
                     
                     NavigationLink(destination: ExerciseView()) {
-                                        Text("Start Workout")
-                                            .font(.title)
-                                            .padding()
-                                            .background(Color.blue)
-                                            .foregroundColor(.white)
-                                            .cornerRadius(10)
-                                    }
-                                    .padding()
+                        Text("Start Workout")
+                            .font(.title)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    .padding()
                 }
-                //.frame(maxWidth: .infinity)
-                .background(.thinMaterial)
                 .padding()
-                .border(/*@START_MENU_TOKEN@*/Color.black/*@END_MENU_TOKEN@*/)
+                .background(Color.white)
+                .cornerRadius(20)
+                .shadow(radius: 10)
+                .padding()
             }
             .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbarBackground(
-                Color.blue, for: .navigationBar)
+            .toolbarBackground(Color.blue, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .navigationBarTitle("Meditera")
+            .navigationBarTitle("Meditera", displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    NavigationLink(destination: AboutView()) {
+                        Text("Om Oss")
+                            .foregroundColor(.white)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: LogInView(authViewModel: authViewModel)) {
+                        Text(authViewModel.isLoggedIn ? "Account" : "Log In")
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+
         }
-         
     }
 }
+
+
+struct AboutView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Om Oss")
+                .font(.largeTitle)
+                .foregroundColor(.blue)
+                .padding(.bottom, 20)
+            
+            Spacer()
+            
+            Text("Välkommen till vår app! Vi är här för att hjälpa dig att hitta lugn och ro i din vardag. Med våra olika övningar och verktyg är vårt mål att ge dig verktyg för att koppla av, minska stress och främja ditt välbefinnande.")
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.blue)
+                .cornerRadius(10)
+                .frame(width: 200, height: 600) // Justera bredden för att centrera texten på sidan
+                .multilineTextAlignment(.center) // Centrera texten horisontellt
+                
+            Spacer()
+        }
+        .padding()
+        .navigationBarTitle("Om Oss")
+        .background(Color.white)
+        .edgesIgnoringSafeArea(.all)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(Color.blue, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+    }
+}
+
+
+
 
 struct SplashScreenView: View {
     @State private var scale: CGFloat = 1.0
@@ -110,97 +182,134 @@ struct SplashScreenView: View {
     }
 }
 
+struct AchievementView: View {
+    var achievements: [Achievement]
+    
+    var body: some View {
+        VStack {
+            Text("Achievements")
+                .font(.title)
+                .padding()
+            
+            List(achievements) { achievement in
+                VStack(alignment: .leading) {
+                    Text(achievement.name)
+                        .font(.headline)
+                    Text("Date: \(achievement.date, formatter: dateFormatter)")
+                        .font(.subheadline)
+                }
+            }
+        }
+    }
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }
+}
+
+
 struct LogInView: View {
     @ObservedObject var authViewModel: AuthViewModel
     @State private var email = ""
     @State private var password = ""
     @State private var isSignIn = true
     @State private var errorMessage: String?
-    @State private var readyToNavigate : Bool = false
     
     var body: some View {
         NavigationView {
-                    GeometryReader{ proxy in
-                        Color.orange
-                        ScrollView{
+            if authViewModel.isLoggedIn {
+                VStack {
+                    Text("Välkommen, \(authViewModel.userEmail ?? "")")
+                        .font(.title)
+                        .padding()
+                    
+                    Button(action: {
+                        authViewModel.signOut()
+                    }) {
+                        Text("Log Out")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    
+                    AchievementView(achievements: authViewModel.achievements)
+                }
+                .padding()
+            } else {
+                GeometryReader { proxy in
+                    Color.blue
+                    ScrollView {
+                        VStack {
+                            Spacer()
                             VStack {
-                                ZStack{
-                                    Circle()
-                                        .stroke(.white.opacity(0.2), lineWidth: 40)
-                                        .frame(width: 260, height: 260, alignment: .center)
-                                    Circle()
-                                        .stroke(.white.opacity(0.2), lineWidth: 80)
-                                        .frame(width: 260, height: 260, alignment: .center)
-                                }
-                                Spacer()
-                                VStack{
-                                    
-                                    
-                                    TextField("Email", text: $email)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .padding()
-                                    
-                                    SecureField("Password", text: $password)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .padding()
-                                    
-                                    Button(action: {
-                                        if isSignIn {
-                                            signIn()
-                                        } else {
-                                            signUp()
-                                        }
-                                    }) {
-                                        Text(isSignIn ? "Sign In" : "Sign Up")
-                                    }
+                                TextField("Email", text: $email)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding()
-                                    .foregroundColor(.white)
-                                    .background(Color.orange)
-                                    .cornerRadius(10)
-                                    
-                                    if let errorMessage = errorMessage {
-                                        Text(errorMessage)
-                                            .foregroundColor(.red)
-                                    }
-                                    
-                                    Toggle(isOn: $isSignIn) {
-                                        Text(isSignIn ? "Don't have an account? Sign up" : "Already have an account? Log In")
-                                            .foregroundColor(.black)
-                                    }
+                                
+                                SecureField("Password", text: $password)
+                                    .autocapitalization(.none)
+                                    .disableAutocorrection(true)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding()
+                                
+                                Button(action: {
+                                    if isSignIn {
+                                        signIn()
+                                    } else {
+                                        signUp()
+                                    }
+                                }) {
+                                    Text(isSignIn ? "Sign In" : "Sign Up")
+                                        .font(.headline)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(10)
                                 }
-                                .background(Color.white)
-                                ZStack{
-                                    Circle()
-                                        .stroke(.white.opacity(0.2), lineWidth: 40)
-                                        .frame(width: 260, height: 260, alignment: .center)
-                                    Circle()
-                                        .stroke(.white.opacity(0.2), lineWidth: 80)
-                                        .frame(width: 260, height: 260, alignment: .center)
+                                .padding(.horizontal)
+                                
+                                if let errorMessage = errorMessage {
+                                    Text(errorMessage)
+                                        .foregroundColor(.red)
+                                        .padding()
                                 }
                                 
+                                Toggle(isOn: $isSignIn) {
+                                    Text(isSignIn ? "Don't have an account? Sign up" : "Already have an account? Log In")
+                                        .foregroundColor(.blue)
+                                }
+                                .padding()
                             }
-                            .ignoresSafeArea(.all, edges: .all)
-                            .frame(minHeight: proxy.size.height)
+                            .background(Color.white)
+                            .cornerRadius(20)
+                            .shadow(radius: 10)
+                            .padding()
+                            
+                           Spacer()
                         }
-                        .edgesIgnoringSafeArea(.all)
+                        .ignoresSafeArea(.all, edges: .all)
+                        .frame(minHeight: proxy.size.height)
                     }
-                    .ignoresSafeArea(.all, edges: .all)
+                    .edgesIgnoringSafeArea(.all)
                 }
-        .navigationBarTitle("Sign In/Sign Up")
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbarBackground(
-            Color.white,
-            for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .navigationDestination(isPresented: $readyToNavigate){
-            HomeView(authViewModel: authViewModel)
-        }
-        .onAppear {
-            authViewModel.signOut()
+                .ignoresSafeArea(.all, edges: .all)
+                .navigationBarTitle("Sign In/Sign Up")
+                .toolbarColorScheme(.dark, for: .navigationBar)
+                .toolbarBackground(Color.blue, for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .accentColor(.white)
+            }
         }
     }
-    
+
     func signUp() {
         authViewModel.signUp(email: email, password: password) { error in
             if let error = error {
@@ -210,18 +319,20 @@ struct LogInView: View {
             }
         }
     }
-    
+
     func signIn() {
         authViewModel.login(email: email, password: password) { error in
             if let error = error {
                 errorMessage = error.localizedDescription
             } else {
                 errorMessage = nil
-                readyToNavigate = true
             }
         }
     }
 }
+
+
+
 
 struct Exercise {
     let name: String
@@ -236,16 +347,16 @@ struct ExerciseView: View {
     @State private var timer: Timer?
     
     let exercises: [Exercise] = [
-        Exercise(name: "Push-up", imageName: "pushup"),
-        Exercise(name: "Squat", imageName: "squat"),
-        Exercise(name: "Lunge", imageName: "lunge"),
-        Exercise(name: "Plank", imageName: "plank"),
-        Exercise(name: "Burpee", imageName: "burpee"),
-        Exercise(name: "Sit-up", imageName: "situp"),
-        Exercise(name: "Jumping Jack", imageName: "jumpingjack"),
-        Exercise(name: "Mountain Climber", imageName: "mountainclimber"),
-        Exercise(name: "High Knees", imageName: "highknees"),
-        Exercise(name: "Leg Raise", imageName: "legraise")
+        Exercise(name: "övning1", imageName: "övning10"),
+        Exercise(name: "övning2", imageName: "övning10"),
+        Exercise(name: "övning3", imageName: "övning10"),
+        Exercise(name: "övning4", imageName: "övning10"),
+        Exercise(name: "övning5", imageName: "övning10"),
+        Exercise(name: "övning6", imageName: "övning10"),
+        Exercise(name: "övning7", imageName: "övning10"),
+        Exercise(name: "övning8", imageName: "övning10"),
+        Exercise(name: "övning9", imageName: "övning10"),
+        Exercise(name: "övning10", imageName: "övning10")
     ]
     
     let exerciseDuration = 45 // 45 seconds per exercise
