@@ -69,19 +69,58 @@ struct HomeView: View {
                     
                     VStack {
                         GroupBox {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Övning 1")
-                                Text("Övning 2")
-                                Text("Övning 3")
-                                Text("Övning 4")
-                                Text("Övning 5")
-                                Text("Övning 6")
-                                Text("Övning 7")
-                                Text("Övning 8")
-                                Text("Övning 9")
-                                Text("Övning 10")
+                            ScrollView { // Wrap the VStack with ScrollView
+                                VStack(alignment: .leading, spacing: 10) {
+                                    Text("Övning 1")
+                                    Text("""
+                                        Mountain Pose (Tadasana): Stå upp med fötterna ihop eller lätt isär, sträck armarna ner längs sidorna med handflatorna vända mot kroppen. Rulla axlarna tillbaka och ner, stå rak i ryggen och fokusera på djupandning. Denna övning främjar stabilitet och närvaro.
+                                        """)
+                                    Text("Övning 2")
+                                    Text("""
+                                        Barnets position (Balasana): Sitt på knäna med stortårna ihop och knäna isär. Luta dig framåt och sträck armarna framåt mot golvet med pannan vilar mot mattan. Andas djupt och slappna av i ryggen och nacken.
+                                        """)
+                                    Text("Övning 3")
+                                    Text("""
+                                        Katt-Ko-pose (Marjaryasana-Bitilasana): Kom ner på alla fyra med händerna under axlarna och knäna under höfterna. Inandas, sänk magen mot mattan och lyft huvudet och svansen uppåt för Ko-pose. Andas ut, rund ryggen och dra hakan mot bröstet för Katt-pose.
+                                        """)
+                                    Text("Övning 4")
+                                    Text("""
+                                        Sittande framåtböjning (Paschimottanasana): Sitt på golvet med benen utsträckta framåt. Andas in, sträck armarna uppåt, och andas ut, böj framåt från höfterna och sträck armarna mot tårna. Håll ryggen rak och slappna av i nacken.
+                                        """)
+                                    Text("Övning 5")
+                                    Text("""
+                                        Ben-upp-vid-väggen-position (Viparita Karani): Ligg på ryggen intill en vägg och lyft benen rakt upp mot taket med rumpan nära väggen. Placera armarna bredvid kroppen med handflatorna uppåt och slappna av i nacken och axlarna.
+                                        """)
+                                    Text("Övning 6")
+                                    Text("""
+                                        Död mans position (Savasana): Ligg på ryggen med benen något isär och armarna längs sidorna med handflatorna uppåt. Slappna av helt i kroppen och fokusera på djupandning.
+                                        """)
+                                    Text("Övning 7")
+                                    Text("""
+                                        Sittande ryggtvist (Ardha Matsyendrasana): Sitt på golvet med benen utsträckta framåt. Böj det högra benet och placera foten utanför det vänstra låret. Sväng överkroppen mot höger och placera vänster arm på utsidan av det högra knät med höger hand bakom dig för stöd. Andas in för att förlänga ryggraden och andas ut för att fördjupa twisten.
+                                        """)
+                                    Text("Övning 8")
+                                    Text("""
+                                        Stående framåtböjning (Uttanasana): Stå upp med fötterna tätt ihop eller lätt isär. Andas in, sträck armarna uppåt, och andas ut, böj framåt från höfterna och sträck armarna mot golvet eller benen. Slappna av i nacken och låt huvudet hänga fritt.
+                                        """)
+                                    Text("Övning 9")
+                                    Text("""
+                                        Liggande fjärilsposition (Supta Baddha Konasana): Ligg på ryggen med knäna böjda och fötterna nära rumpan. Låt knäna falla utåt mot sidorna och placera fotsulorna mot varandra. Placera händerna på magen eller längs sidorna och slappna av i höfterna och ljumskarna.
+                                        """)
+                                    Text("Övning 10")
+                                    Text("""
+                                        Sittande meditation med knäna ihop (Sukhasana eller Lotusposition):
+                                        Sitt på en kudde eller en matta med benen korsade, och placera varje fot på motsatt lår så att knäna ligger ner mot marken.
+                                        Placera händerna på knäna med handflatorna vända uppåt och tummarna och pekfingrarna möts i Gyan Mudra, eller bara vila händerna i knäet.
+                                        Håll ryggraden rak men avslappnad, och låt axlarna sjunka neråt från öronen.
+                                        Släpp spänningar i ansikte, käkar och nacke, och låt ögonen vara slutna eller halvöppna med en mjuk blick riktad mot marken framför dig.
+                                        Fokusera på din andning, låt den vara naturlig och obegränsad. Observera känslan av att andas in och ut, utan att ändra på något sätt.
+                                        När tankar, känslor eller sinnesintryck kommer upp, observera dem utan att döma eller fastna i dem. Låt dem komma och gå som moln på himlen, och återvänd sedan till din andning.
+
+                                        """)
+                                }
+                                .padding()
                             }
-                            .padding()
                         }
                         .frame(height: isDisclosed ? nil : 0, alignment: .top)
                         .clipped()
@@ -89,7 +128,7 @@ struct HomeView: View {
                     }
                     
                     NavigationLink(destination: ExerciseView()) {
-                        Text("Start Workout")
+                        Text("Slappna Av")
                             .font(.title)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -301,9 +340,15 @@ struct LogInView: View {
                     .edgesIgnoringSafeArea(.all)
                 }
                 .ignoresSafeArea(.all, edges: .all)
-                .navigationBarTitle("Sign In/Sign Up")
-                .toolbarColorScheme(.dark, for: .navigationBar)
-                .toolbarBackground(Color.blue, for: .navigationBar)
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            Text("Sign In/Sign Up")
+                                .font(.largeTitle)
+                                .foregroundColor(.blue) // Set the text color here
+                        }
+                    }
+                .toolbarColorScheme(.light, for: .navigationBar)
+                .toolbarBackground(Color.white, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .accentColor(.white)
             }
@@ -335,11 +380,13 @@ struct LogInView: View {
 
 
 struct Exercise {
+    var id = UUID()
     let name: String
     let imageName: String
 }
 
 struct ExerciseView: View {
+    @ObservedObject var authViewModel = AuthViewModel()
     @State private var currentExerciseIndex = 0
     @State private var timeRemaining = 600
     @State private var isResting = false
@@ -347,19 +394,19 @@ struct ExerciseView: View {
     @State private var timer: Timer?
     
     let exercises: [Exercise] = [
-        Exercise(name: "övning1", imageName: "övning10"),
-        Exercise(name: "övning2", imageName: "övning10"),
-        Exercise(name: "övning3", imageName: "övning10"),
-        Exercise(name: "övning4", imageName: "övning10"),
-        Exercise(name: "övning5", imageName: "övning10"),
-        Exercise(name: "övning6", imageName: "övning10"),
-        Exercise(name: "övning7", imageName: "övning10"),
-        Exercise(name: "övning8", imageName: "övning10"),
-        Exercise(name: "övning9", imageName: "övning10"),
-        Exercise(name: "övning10", imageName: "övning10")
+        Exercise(name: "Mountain Pose", imageName: "mountain_pose"),
+        Exercise(name: "Child's Pose", imageName: "childspose"),
+        Exercise(name: "Cat-Cow Pose", imageName: "cat"),
+        Exercise(name: "Seated Forward Bend", imageName: "23-seatedforward"),
+        Exercise(name: "Legs-Up-the-Wall Pose", imageName: "Legs-Up-the-Wall-Pose-restorative"),
+        Exercise(name: "Corpse Pose", imageName: "13-corpse-pose"),
+        Exercise(name: "Seated Spinal Twist", imageName: "18-halflord-fishes"),
+        Exercise(name: "Standing Forward Bend", imageName: "standing-forward-bend"),
+        Exercise(name: "Reclining Bound Angle Pose", imageName: "10-reclining-bound-angle"),
+        Exercise(name: "Meditation", imageName: "images 1")
     ]
     
-    let exerciseDuration = 45 // 45 seconds per exercise
+    let exerciseDuration = 45// 45 seconds per exercise
     let breakDuration = 15 // 15 seconds break
     
     var body: some View {
@@ -389,7 +436,7 @@ struct ExerciseView: View {
                 Text(isPaused ? "Resume" : "Pause")
                     .font(.title)
                     .padding()
-                    .background(isPaused ? Color.green : Color.red)
+                    .background(isPaused ? Color.blue : Color.cyan)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
@@ -411,6 +458,10 @@ struct ExerciseView: View {
                     if self.timeRemaining % (self.exerciseDuration + self.breakDuration) == 0 {
                         self.isResting = false
                         self.currentExerciseIndex = (self.currentExerciseIndex + 1) % self.exercises.count
+                        
+                        if self.currentExerciseIndex == 0 {
+                            self.authViewModel.incrementWorkoutCount() // Increment workout count after completing all exercises
+                        }
                     }
                 }
             } else {

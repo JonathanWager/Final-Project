@@ -9,6 +9,7 @@ class AuthViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var currentUserUID: String?
     @Published var achievements: [Achievement] = []
+    @Published var workoutCount: Int = 0 // New variable to track workout count
 
     private var db = Firestore.firestore()
     
@@ -18,6 +19,7 @@ class AuthViewModel: ObservableObject {
             self.currentUserUID = user?.uid
             if let uid = user?.uid {
                 self.fetchAchievements(for: uid)
+                self.fetchWorkoutCount(for: uid) // Fetch workout count on initialization
             }
         }
     }
@@ -31,6 +33,7 @@ class AuthViewModel: ObservableObject {
                 self.userEmail = email
                 if let uid = authResult?.user.uid {
                     self.fetchAchievements(for: uid)
+                    self.fetchWorkoutCount(for: uid) // Fetch workout count on login
                 }
                 completion(nil)
             }
@@ -45,6 +48,10 @@ class AuthViewModel: ObservableObject {
                 self.isLoggedIn = true
                 self.userEmail = email
                 if let uid = authResult?.user.uid {
+                    // Create workoutCount for the new user
+                    self.createWorkoutCount(for: uid)
+                    
+                    // Add achievement for account created
                     self.addAchievement(uid: uid, achievement: Achievement(name: "Account Created")) { error in
                         if let error = error {
                             print("Error adding achievement: \(error)")
@@ -56,12 +63,24 @@ class AuthViewModel: ObservableObject {
         }
     }
 
+    private func createWorkoutCount(for uid: String) {
+        db.collection("users").document(uid).setData(["workoutCount": 0]) { error in
+            if let error = error {
+                print("Error creating workoutCount for user: \(error)")
+            } else {
+                print("Workout count created for user")
+            }
+        }
+    }
+
+
     func signOut() {
         do {
             try Auth.auth().signOut()
             self.isLoggedIn = false
             self.userEmail = nil
             self.achievements = []
+            self.workoutCount = 0 // Reset workout count on sign out
         } catch {
             print("Sign out error: \(error)")
         }
@@ -96,6 +115,42 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+
+    func fetchWorkoutCount(for uid: String) {
+        let docRef = db.collection("users").document(uid)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                self.workoutCount = document.data()?["workoutCount"] as? Int ?? 0
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+
+    func incrementWorkoutCount() {
+        guard let uid = self.currentUserUID else { return }
+        self.workoutCount += 1
+        db.collection("users").document(uid).updateData(["workoutCount": self.workoutCount]) { error in
+            if let error = error {
+                print("Error updating workout count: \(error)")
+            } else {
+                self.checkAchievements(for: uid)
+            }
+        }
+    }
+
+    func checkAchievements(for uid: String) {
+        switch self.workoutCount {
+        case 1:
+            self.addAchievement(uid: uid, achievement: Achievement(name: "First Workout")) { _ in }
+        case 5:
+            self.addAchievement(uid: uid, achievement: Achievement(name: "Fifth Workout")) { _ in }
+        case 10:
+            self.addAchievement(uid: uid, achievement: Achievement(name: "Tenth Workout")) { _ in }
+        default:
+            break
+        }
+    }
 }
 
 struct Achievement: Identifiable {
@@ -108,5 +163,6 @@ struct Achievement: Identifiable {
         self.date = date
     }
 }
+
 
 
